@@ -1,19 +1,37 @@
+'use client'
+
+import { useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import { useAuth } from '@/lib/hooks/useAuth'
+
 export default function HomePage() {
-  return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-24">
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm">
-        <h1 className="text-4xl font-bold text-center mb-8">
-          Prodigy Teacher Portal
-        </h1>
-        <p className="text-center text-lg text-gray-600">
-          Educational web application prototype
-        </p>
-        <div className="mt-8 text-center">
-          <p className="text-sm text-gray-500">
-            Next.js 15 • TypeScript • Tailwind CSS
-          </p>
+  const { data: session, isLoading } = useAuth()
+  const router = useRouter()
+
+  useEffect(() => {
+    if (!isLoading) {
+      if (session) {
+        router.push('/classes')
+      } else {
+        router.push('/login')
+      }
+    }
+  }, [session, isLoading, router])
+
+  if (isLoading) {
+    return (
+      <main className="flex min-h-screen flex-col items-center justify-center p-24">
+        <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm">
+          <h1 className="text-4xl font-bold text-center mb-8">
+            Prodigy Teacher Portal
+          </h1>
+          <div className="flex items-center justify-center mt-8">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+          </div>
         </div>
-      </div>
-    </main>
-  )
+      </main>
+    )
+  }
+
+  return null // Will redirect
 }
