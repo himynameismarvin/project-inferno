@@ -22,8 +22,8 @@ Educational web application prototype - a lightweight, modular clone of the Prod
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/himynameismarvin/project-shell.git
-cd project-shell
+git clone https://github.com/himynameismarvin/project-inferno.git
+cd project-inferno
 ```
 
 2. Install dependencies:

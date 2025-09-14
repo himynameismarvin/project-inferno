@@ -1,14 +1,14 @@
 # Prodigy Teacher Portal - Comprehensive Task List
 
-**Project Repository:** project-shell
+**Project Repository:** project-inferno
 **Status:** In Development
 **Last Updated:** September 13, 2025
 
 ## ✅ Completed Tasks
 
 ### Phase 1: Foundation & Setup ✅ COMPLETED
-- [x] **1.1** Initialize GitHub repository named "project-shell" ✅
-  - ✅ Created GitHub repo: https://github.com/himynameismarvin/project-shell
+- [x] **1.1** Initialize GitHub repository named "project-inferno" ✅
+  - ✅ Created GitHub repo: https://github.com/himynameismarvin/project-inferno
   - ✅ Set up branch protection and initial README
   - ✅ Cloned locally and configured remote
 
@@ -36,7 +36,7 @@
 ### Phase 1: Foundation & Setup (Week 1)
 
 #### Version Control & Project Initialization
-- [ ] **1.1** Initialize GitHub repository named "project-shell"
+- [ ] **1.1** Initialize GitHub repository named "project-inferno"
   - Create new repo on GitHub
   - Initialize with Next.js .gitignore
   - Set up branch protection rules
@@ -272,7 +272,7 @@
 *This section will be updated with important decisions, blockers, and notes as we progress through development.*
 
 ### Key Decisions Made:
-- Project name: "project-shell"
+- Project name: "project-inferno"
 - Tech stack confirmed: Next.js 14+, TypeScript, Supabase, shadcn/ui, Tailwind CSS
 
 ### Current Blockers:

@@ -3,9 +3,24 @@ import { supabase } from '../supabase'
 import { Teacher } from '../types'
 
 export function useAuth() {
+  const bypassAuth = process.env.NEXT_PUBLIC_BYPASS_AUTH === 'true'
+
   return useQuery({
-    queryKey: ['auth'],
+    queryKey: ['auth', bypassAuth],
     queryFn: async () => {
+      if (bypassAuth) {
+        // Return mock session when bypassing auth
+        return {
+          access_token: 'mock-token',
+          token_type: 'bearer',
+          user: {
+            id: 'mock-teacher-id',
+            email: 'teacher@example.com',
+            created_at: new Date().toISOString(),
+          }
+        }
+      }
+
       const { data: { session } } = await supabase.auth.getSession()
       return session
     },

@@ -12,16 +12,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/himynameismarvin/project-shell.git"
+    "url": "git+https://github.com/himynameismarvin/project-inferno.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "bugs": {
-    "url": "https://github.com/himynameismarvin/project-shell/issues"
+    "url": "https://github.com/himynameismarvin/project-inferno/issues"
   },
-  "homepage": "https://github.com/himynameismarvin/project-shell#readme",
+  "homepage": "https://github.com/himynameismarvin/project-inferno#readme",
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",
     "@radix-ui/react-dialog": "^1.1.15",
