@@ -93,18 +93,86 @@ export function useClasses(teacherId?: string) {
   })
 }
 
-export function useClass(classId?: string) {
+export function useClassById(classId?: string) {
+  const bypassAuth = process.env.NEXT_PUBLIC_BYPASS_AUTH === 'true'
+
   return useQuery({
-    queryKey: ['class', classId],
-    queryFn: async (): Promise<Class> => {
+    queryKey: ['class', classId, bypassAuth],
+    queryFn: async (): Promise<ClassWithStats> => {
+      // Return mock class data when bypassing auth
+      if (bypassAuth) {
+        const mockClasses = [
+          {
+            id: 'mock-class-1',
+            teacher_id: 'mock-teacher-id',
+            name: 'Room 12A - Math Wizards',
+            grade: 3,
+            subject: 'math',
+            class_code: 'ABC123',
+            school_year: '2024-2025',
+            archived: false,
+            created_at: new Date().toISOString(),
+            settings: {},
+            student_count: 24,
+            active_students: 8,
+            recent_activity: 12
+          },
+          {
+            id: 'mock-class-2',
+            teacher_id: 'mock-teacher-id',
+            name: 'Room 12B - Number Ninjas',
+            grade: 3,
+            subject: 'math',
+            class_code: 'DEF456',
+            school_year: '2024-2025',
+            archived: false,
+            created_at: new Date().toISOString(),
+            settings: {},
+            student_count: 18,
+            active_students: 5,
+            recent_activity: 7
+          },
+          {
+            id: 'mock-class-3',
+            teacher_id: 'mock-teacher-id',
+            name: 'Grade 2 Reading Stars',
+            grade: 2,
+            subject: 'english',
+            class_code: 'GHI789',
+            school_year: '2024-2025',
+            archived: false,
+            created_at: new Date().toISOString(),
+            settings: {},
+            student_count: 22,
+            active_students: 3,
+            recent_activity: 15
+          }
+        ]
+
+        const foundClass = mockClasses.find(c => c.id === classId)
+        if (!foundClass) {
+          throw new Error('Class not found')
+        }
+        return foundClass
+      }
+
       const { data, error } = await supabase
         .from('classes')
-        .select('*')
+        .select(`
+          *,
+          class_enrollments!inner(count)
+        `)
         .eq('id', classId)
         .single()
 
       if (error) throw error
-      return data
+
+      return {
+        ...data,
+        student_count: data.class_enrollments?.[0]?.count || 0,
+        active_students: 0, // Will be calculated with real-time data
+        recent_activity: 0, // Will be calculated with real-time data
+      }
     },
     enabled: !!classId,
   })
