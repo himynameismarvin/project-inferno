@@ -15,10 +15,23 @@ export function useAuth() {
 
 export function useTeacher() {
   const { data: session } = useAuth()
+  const bypassAuth = process.env.NEXT_PUBLIC_BYPASS_AUTH === 'true'
 
   return useQuery({
-    queryKey: ['teacher', session?.user?.id],
+    queryKey: ['teacher', session?.user?.id, bypassAuth],
     queryFn: async (): Promise<Teacher | null> => {
+      // Return mock teacher data when bypassing auth
+      if (bypassAuth) {
+        return {
+          id: 'mock-teacher-id',
+          email: 'teacher@example.com',
+          full_name: 'Test Teacher',
+          school: 'Demo Elementary School',
+          created_at: new Date().toISOString(),
+          settings: {}
+        }
+      }
+
       if (!session?.user?.id) return null
 
       const { data, error } = await supabase
@@ -34,7 +47,7 @@ export function useTeacher() {
 
       return data
     },
-    enabled: !!session?.user?.id,
+    enabled: !!session?.user?.id || bypassAuth,
   })
 }
 

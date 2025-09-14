@@ -9,8 +9,10 @@ export default function HomePage() {
   const router = useRouter()
 
   useEffect(() => {
+    const bypassAuth = process.env.NEXT_PUBLIC_BYPASS_AUTH === 'true'
+
     if (!isLoading) {
-      if (session) {
+      if (session || bypassAuth) {
         router.push('/classes')
       } else {
         router.push('/login')
