@@ -16,6 +16,7 @@ import {
 } from 'lucide-react'
 import { useSignOut, useTeacher } from '@/lib/hooks/useAuth'
 import { useAppStore } from '@/lib/store'
+import { useClassById } from '@/lib/hooks/useClasses'
 
 interface NavItem {
   name: string
@@ -62,6 +63,7 @@ export function Sidebar() {
   const { data: teacher } = useTeacher()
   const signOutMutation = useSignOut()
   const { currentClassId, sidebarOpen } = useAppStore()
+  const { data: classData } = useClassById(currentClassId)
 
   const handleSignOut = async () => {
     try {
@@ -109,13 +111,15 @@ export function Sidebar() {
       </div>
 
       {/* Class Context Info */}
-      {isInClassContext && sidebarOpen && (
+      {isInClassContext && sidebarOpen && classData && (
         <div className="px-4 py-3 border-b border-gray-200 bg-blue-50">
           <p className="text-xs font-medium text-blue-600 uppercase tracking-wide">
             Current Class
           </p>
-          <p className="text-sm font-medium text-gray-900">Room 12A - Math Wizards</p>
-          <p className="text-xs text-gray-500">Grade 3 • Math • ABC123</p>
+          <p className="text-sm font-medium text-gray-900">{classData.name}</p>
+          <p className="text-xs text-gray-500">
+            Grade {classData.grade} • {classData.subject === 'math' ? 'Math' : 'English'} • {classData.class_code}
+          </p>
         </div>
       )}
 

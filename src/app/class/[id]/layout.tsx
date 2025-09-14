@@ -3,7 +3,6 @@
 import { ReactNode } from 'react'
 import { useParams } from 'next/navigation'
 import { AppLayout } from '@/components/layout/app-layout'
-import { ClassTabs } from '@/components/features/classes/class-tabs'
 import { useClassById } from '@/lib/hooks/useClasses'
 import { Card } from '@/components/ui/card'
 
@@ -61,9 +60,6 @@ export default function ClassLayout({ children }: ClassLayoutProps) {
             </div>
           </div>
         </Card>
-
-        {/* Class Navigation */}
-        <ClassTabs classId={classId} />
 
         {/* Page Content */}
         {children}
