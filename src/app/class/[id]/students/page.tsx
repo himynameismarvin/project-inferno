@@ -16,7 +16,7 @@ interface Student {
   isOnline: boolean
   lastPlayed: string | null
   gradeOverride: number | null
-  loginMethod: 'prodigy' | 'google' | 'clever'
+  loginMethods: ('prodigy' | 'google' | 'clever' | 'microsoft')[]
   device: 'desktop' | 'mobile' | null
 }
 
@@ -31,7 +31,7 @@ const students: Student[] = [
     isOnline: true,
     lastPlayed: '2 minutes ago',
     gradeOverride: null,
-    loginMethod: 'prodigy',
+    loginMethods: ['prodigy', 'google'],
     device: 'desktop'
   },
   {
@@ -43,7 +43,7 @@ const students: Student[] = [
     isOnline: true,
     lastPlayed: '5 minutes ago',
     gradeOverride: 4,
-    loginMethod: 'google',
+    loginMethods: ['google', 'microsoft', 'clever'],
     device: 'mobile'
   },
   {
@@ -55,7 +55,7 @@ const students: Student[] = [
     isOnline: false,
     lastPlayed: '1 hour ago',
     gradeOverride: null,
-    loginMethod: 'prodigy',
+    loginMethods: ['prodigy'],
     device: null
   },
   {
@@ -67,7 +67,7 @@ const students: Student[] = [
     isOnline: false,
     lastPlayed: 'Yesterday',
     gradeOverride: null,
-    loginMethod: 'clever',
+    loginMethods: ['clever', 'prodigy', 'google', 'microsoft'],
     device: null
   },
   {
@@ -79,7 +79,7 @@ const students: Student[] = [
     isOnline: true,
     lastPlayed: 'Just now',
     gradeOverride: null,
-    loginMethod: 'prodigy',
+    loginMethods: ['prodigy', 'microsoft'],
     device: 'desktop'
   }
 ]
@@ -91,16 +91,6 @@ export default function StudentsPage() {
   const totalStudents = students.length
   const onlineStudents = students.filter(s => s.isOnline).length
   const offlineStudents = students.filter(s => !s.isOnline).length
-  const lastActivity = students
-    .filter(s => s.lastPlayed && s.lastPlayed !== 'Yesterday')
-    .sort((a, b) => {
-      // Simple sort by recency - in real app would use actual timestamps
-      if (a.lastPlayed?.includes('Just now')) return -1
-      if (b.lastPlayed?.includes('Just now')) return 1
-      if (a.lastPlayed?.includes('minute')) return -1
-      if (b.lastPlayed?.includes('minute')) return 1
-      return 0
-    })[0]?.lastPlayed || 'No recent activity'
 
   return (
     <div className="space-y-6">
@@ -109,30 +99,34 @@ export default function StudentsPage() {
         totalStudents={totalStudents}
         onlineStudents={onlineStudents}
         offlineStudents={offlineStudents}
-        lastActivity={lastActivity}
       />
 
       {/* Action Buttons Row */}
-      <div className="flex items-center space-x-3">
-        <Button>
+      <div className="flex flex-col space-y-3 lg:flex-row lg:items-center lg:space-y-0 lg:space-x-3">
+        <Button className="w-full lg:w-auto">
           <UserPlus className="mr-2 h-4 w-4" />
           Add students
         </Button>
-        <Button variant="outline">
-          <Activity className="mr-2 h-4 w-4" />
-          Activity board
-        </Button>
-        <Button variant="outline">
-          <Eye className="mr-2 h-4 w-4" />
-          View student logins
-        </Button>
-        <Button variant="outline">
-          <Printer className="mr-2 h-4 w-4" />
-          Print parent letters
-        </Button>
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3 xl:flex xl:space-x-3 xl:gap-0">
+          <Button variant="outline" className="!hidden lg:!flex w-full lg:w-auto">
+            <Activity className="mr-2 h-4 w-4" />
+            Activity board
+          </Button>
+          <Button variant="outline" className="w-full xl:w-auto">
+            <Eye className="mr-2 h-4 w-4" />
+            View student logins
+          </Button>
+          <Button variant="outline" className="w-full xl:w-auto">
+            <Printer className="mr-2 h-4 w-4" />
+            Print parent letters
+          </Button>
+        </div>
       </div>
 
       <StudentsTable classId={classId} students={students} />
+
+      {/* Bottom spacing to prevent bulk action bar from covering table */}
+      <div className="h-12"></div>
     </div>
   )
 }

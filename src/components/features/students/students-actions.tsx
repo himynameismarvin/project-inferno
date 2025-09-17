@@ -27,7 +27,7 @@ export function StudentsActions({ classId }: StudentsActionsProps) {
         Add students
       </Button>
 
-      <Button variant="outline">
+      <Button variant="outline" className="hidden lg:flex">
         <BarChart3 className="h-4 w-4 mr-2" />
         Activity board
       </Button>
