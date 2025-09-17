@@ -1,0 +1,8 @@
+{
+  "functions": {
+    "app/**": {
+      "runtime": "nodejs20.x"
+    }
+  },
+  "buildCommand": "npm ci && npm run build"
+}
