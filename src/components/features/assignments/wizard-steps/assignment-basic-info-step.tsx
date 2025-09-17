@@ -316,7 +316,7 @@ export function AssignmentBasicInfoStep({
           {Object.keys(groupedSkills).length === 0 && skillSearch && (
             <div className="text-center py-8 text-gray-500">
               <BookOpen className="h-12 w-12 mx-auto mb-2 text-gray-400" />
-              <p>No skills found matching "{skillSearch}"</p>
+              <p>No skills found matching &quot;{skillSearch}&quot;</p>
               <Button
                 variant="link"
                 onClick={() => setSkillSearch('')}

@@ -269,7 +269,7 @@ export function AssignmentSkillConfigStep({
         </CardHeader>
         <CardContent>
           <div className="space-y-6">
-            {selectedSkills.map((skill) => {
+            {selectedSkills.map((skill: any) => {
               const config = formData.skillConfigs?.[skill.id] || {}
 
               return (

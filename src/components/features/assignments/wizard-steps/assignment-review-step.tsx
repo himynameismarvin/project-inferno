@@ -361,7 +361,7 @@ export function AssignmentReviewStep({
             <div>
               <h4 className="font-medium text-green-900">Ready to Create Assignment</h4>
               <p className="text-sm text-green-700">
-                All required information has been provided. Click "Create Assignment" to proceed.
+                All required information has been provided. Click &quot;Create Assignment&quot; to proceed.
               </p>
             </div>
           </div>
