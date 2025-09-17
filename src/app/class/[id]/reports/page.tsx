@@ -1,9 +1,12 @@
 'use client'
 
 import { useParams } from 'next/navigation'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { FileText, Download } from 'lucide-react'
+import { ReportsHeader } from '@/components/features/reports/reports-header'
+import { CurriculumProgressCard } from '@/components/features/reports/curriculum-progress-card'
+import { StudentActivityCard } from '@/components/features/reports/student-activity-card'
+import { RecentAssignmentsList } from '@/components/features/reports/recent-assignments-list'
+import { PlacementTestCard } from '@/components/features/reports/placement-test-card'
+import { ReportsNavigation } from '@/components/features/reports/reports-navigation'
 
 export default function ReportsPage() {
   const params = useParams()
@@ -11,34 +14,23 @@ export default function ReportsPage() {
 
   return (
     <div className="space-y-6">
-      <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle className="flex items-center">
-              <FileText className="h-5 w-5 mr-2" />
-              Reports
-            </CardTitle>
-            <Button>
-              <Download className="h-4 w-4 mr-2" />
-              Export Data
-            </Button>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <div className="text-center py-12">
-            <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
-              Progress Reports
-            </h3>
-            <p className="text-gray-500 mb-4">
-              This page will show detailed progress reports, analytics, and data export options.
-            </p>
-            <p className="text-sm text-gray-400">
-              Coming in the next phase of development...
-            </p>
-          </div>
-        </CardContent>
-      </Card>
+      <ReportsHeader classId={classId} />
+      <ReportsNavigation classId={classId} />
+
+      {/* Main Content Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Left Column */}
+        <div className="space-y-6">
+          <CurriculumProgressCard classId={classId} />
+          <StudentActivityCard classId={classId} />
+        </div>
+
+        {/* Right Column */}
+        <div className="space-y-6">
+          <RecentAssignmentsList classId={classId} />
+          <PlacementTestCard classId={classId} />
+        </div>
+      </div>
     </div>
   )
 }

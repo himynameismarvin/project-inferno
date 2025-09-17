@@ -1,0 +1,2 @@
+- always use port 3000 for this project. if there is something running on 3000 already, then it is this project. you have permission to kill 3000 if you have to though to re-run this project. be sure to run it so it runs persistently in the background.
+- never co-author anything in git and never mention ai or claude code in comments

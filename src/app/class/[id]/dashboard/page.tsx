@@ -1,6 +1,7 @@
 'use client'
 
 import { useParams } from 'next/navigation'
+import { DashboardHeader } from '@/components/features/dashboard/dashboard-header'
 import { QuickStats } from '@/components/features/dashboard/quick-stats'
 import { RecentActivity } from '@/components/features/dashboard/recent-activity'
 import { AssignmentsWidget } from '@/components/features/dashboard/assignments-widget'
@@ -13,6 +14,9 @@ export default function ClassDashboardPage() {
 
   return (
     <div className="space-y-6">
+      {/* Dashboard Header */}
+      <DashboardHeader classId={classId} />
+
       {/* Quick Stats */}
       <QuickStats classId={classId} />
 

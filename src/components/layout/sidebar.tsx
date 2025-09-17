@@ -13,6 +13,7 @@ import {
   HelpCircle,
   LogOut,
   GraduationCap,
+  ArrowLeft,
 } from 'lucide-react'
 import { useSignOut, useTeacher } from '@/lib/hooks/useAuth'
 import { useAppStore } from '@/lib/store'
@@ -26,12 +27,6 @@ interface NavItem {
 }
 
 const navigation: NavItem[] = [
-  {
-    name: 'All Classes',
-    href: '/classes',
-    icon: GraduationCap,
-    description: 'View and manage all your classes',
-  },
   {
     name: 'Dashboard',
     href: '/class/[id]/dashboard',
@@ -62,8 +57,8 @@ export function Sidebar() {
   const pathname = usePathname()
   const { data: teacher } = useTeacher()
   const signOutMutation = useSignOut()
-  const { currentClassId, sidebarOpen } = useAppStore()
-  const { data: classData } = useClassById(currentClassId)
+  const { currentClassId } = useAppStore()
+  const { data: classData } = useClassById(currentClassId || undefined)
 
   const handleSignOut = async () => {
     try {
@@ -82,36 +77,50 @@ export function Sidebar() {
 
   const isNavItemActive = (href: string) => {
     const navHref = getNavHref(href)
-    if (href === '/classes') {
-      return pathname === '/classes'
-    }
     return pathname.startsWith(navHref.split('[id]')[0])
   }
 
   const isInClassContext = currentClassId && pathname.includes('/class/')
+  const isOnClassesPage = pathname === '/classes'
 
   return (
-    <div className={cn(
-      "flex flex-col h-full bg-white border-r border-gray-200",
-      sidebarOpen ? "w-64" : "w-16"
-    )}>
+    <div className="hidden lg:flex flex-col h-screen w-64 bg-white border-r border-gray-200">
       {/* Logo */}
       <div className="flex items-center px-4 py-4 border-b border-gray-200">
         <Link href="/classes" className="flex items-center">
           <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
             <GraduationCap className="w-5 h-5 text-white" />
           </div>
-          {sidebarOpen && (
-            <div className="ml-3">
-              <h1 className="text-lg font-semibold text-gray-900">Prodigy</h1>
-              <p className="text-xs text-gray-500">Teacher Portal</p>
-            </div>
+          <div className="ml-3">
+            <h1 className="text-lg font-semibold text-gray-900">Prodigy</h1>
+            <p className="text-xs text-gray-500">Teacher Portal</p>
+          </div>
+        </Link>
+      </div>
+
+      {/* All Classes Link */}
+      <div className="px-2 py-2">
+        <Link
+          href="/classes"
+          className={cn(
+            "group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors",
+            pathname === '/classes'
+              ? "bg-blue-100 text-blue-700"
+              : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
           )}
+        >
+          <ArrowLeft className={cn(
+            "mr-3 h-4 w-4",
+            pathname === '/classes'
+              ? "text-blue-500"
+              : "text-gray-400 group-hover:text-gray-500"
+          )} />
+          <span className="truncate">All Classes</span>
         </Link>
       </div>
 
       {/* Class Context Info */}
-      {isInClassContext && sidebarOpen && classData && (
+      {isInClassContext && classData && (
         <div className="px-4 py-3 border-b border-gray-200 bg-blue-50">
           <p className="text-xs font-medium text-blue-600 uppercase tracking-wide">
             Current Class
@@ -128,7 +137,13 @@ export function Sidebar() {
         {navigation.map((item) => {
           const href = getNavHref(item.href)
           const isActive = isNavItemActive(item.href)
-          const isDisabled = item.href.includes('[id]') && !currentClassId
+          const isClassSpecific = item.href.includes('[id]')
+          const isDisabled = isClassSpecific && !currentClassId
+
+          // Hide class-specific items when on classes page
+          if (isOnClassesPage && isClassSpecific) {
+            return null
+          }
 
           if (isDisabled) {
             return (
@@ -137,7 +152,7 @@ export function Sidebar() {
                 className="group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors text-gray-400 cursor-not-allowed"
               >
                 <item.icon className="mr-3 h-5 w-5 text-gray-300" />
-                {sidebarOpen && <span className="truncate">{item.name}</span>}
+                <span className="truncate">{item.name}</span>
               </div>
             )
           }
@@ -161,9 +176,7 @@ export function Sidebar() {
                     : "text-gray-400 group-hover:text-gray-500"
                 )}
               />
-              {sidebarOpen && (
-                <span className="truncate">{item.name}</span>
-              )}
+              <span className="truncate">{item.name}</span>
             </Link>
           )
         })}
@@ -176,7 +189,7 @@ export function Sidebar() {
           onClick={() => {}}
         >
           <HelpCircle className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500" />
-          {sidebarOpen && <span>Help</span>}
+          <span>Help</span>
         </button>
 
         <button
@@ -184,10 +197,10 @@ export function Sidebar() {
           onClick={() => {}}
         >
           <Settings className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500" />
-          {sidebarOpen && <span>Settings</span>}
+          <span>Settings</span>
         </button>
 
-        {sidebarOpen && teacher && (
+        {teacher && (
           <div className="px-2 py-2 border-t border-gray-200 mt-2">
             <p className="text-xs font-medium text-gray-500 truncate">
               {teacher.full_name || teacher.email}
@@ -203,13 +216,10 @@ export function Sidebar() {
           size="sm"
           onClick={handleSignOut}
           disabled={signOutMutation.isPending}
-          className={cn(
-            "w-full justify-start text-gray-600 hover:text-gray-900 hover:bg-gray-50",
-            !sidebarOpen && "px-2"
-          )}
+          className="w-full justify-start text-gray-600 hover:text-gray-900 hover:bg-gray-50"
         >
           <LogOut className="h-4 w-4 mr-3" />
-          {sidebarOpen && (signOutMutation.isPending ? 'Signing out...' : 'Sign Out')}
+          {signOutMutation.isPending ? 'Signing out...' : 'Sign Out'}
         </Button>
       </div>
     </div>

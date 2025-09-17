@@ -1,0 +1,260 @@
+'use client'
+
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet'
+import {
+  BookOpen,
+  Users,
+  FileText,
+  BarChart3,
+  Settings,
+  HelpCircle,
+  LogOut,
+  GraduationCap,
+  ArrowLeft,
+  Menu,
+} from 'lucide-react'
+import { useSignOut, useTeacher } from '@/lib/hooks/useAuth'
+import { useAppStore } from '@/lib/store'
+import { useClassById } from '@/lib/hooks/useClasses'
+import { useState } from 'react'
+
+interface NavItem {
+  name: string
+  href: string
+  icon: React.ElementType
+  description: string
+}
+
+const navigation: NavItem[] = [
+  {
+    name: 'Dashboard',
+    href: '/class/[id]/dashboard',
+    icon: BookOpen,
+    description: 'Class overview and quick actions',
+  },
+  {
+    name: 'Students',
+    href: '/class/[id]/students',
+    icon: Users,
+    description: 'Manage class roster and student accounts',
+  },
+  {
+    name: 'Assignments',
+    href: '/class/[id]/assignments',
+    icon: FileText,
+    description: 'Create and manage assignments',
+  },
+  {
+    name: 'Reports',
+    href: '/class/[id]/reports',
+    icon: BarChart3,
+    description: 'View student progress and analytics',
+  },
+]
+
+export function MobileNav() {
+  const [open, setOpen] = useState(false)
+  const pathname = usePathname()
+  const { data: teacher } = useTeacher()
+  const signOutMutation = useSignOut()
+  const { currentClassId } = useAppStore()
+  const { data: classData } = useClassById(currentClassId || undefined)
+
+  const handleSignOut = async () => {
+    try {
+      await signOutMutation.mutateAsync()
+      setOpen(false)
+    } catch (error) {
+      console.error('Sign out failed:', error)
+    }
+  }
+
+  const getNavHref = (href: string) => {
+    if (href.includes('[id]') && currentClassId) {
+      return href.replace('[id]', currentClassId)
+    }
+    return href
+  }
+
+  const isNavItemActive = (href: string) => {
+    const navHref = getNavHref(href)
+    return pathname.startsWith(navHref.split('[id]')[0])
+  }
+
+  const isInClassContext = currentClassId && pathname.includes('/class/')
+  const isOnClassesPage = pathname === '/classes'
+
+  const handleLinkClick = () => {
+    setOpen(false)
+  }
+
+  return (
+    <Sheet open={open} onOpenChange={setOpen}>
+      <SheetTrigger asChild>
+        <Button variant="ghost" size="icon" className="lg:hidden">
+          <Menu className="h-6 w-6" />
+          <span className="sr-only">Toggle navigation menu</span>
+        </Button>
+      </SheetTrigger>
+      <SheetContent side="left" className="w-[300px] p-0">
+        <div className="flex flex-col h-full">
+          {/* Logo */}
+          <SheetHeader className="p-4 border-b border-gray-200">
+            <SheetTitle className="text-left">
+              <Link
+                href="/classes"
+                className="flex items-center"
+                onClick={handleLinkClick}
+              >
+                <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                  <GraduationCap className="w-5 h-5 text-white" />
+                </div>
+                <div className="ml-3">
+                  <h1 className="text-lg font-semibold text-gray-900">Prodigy</h1>
+                  <p className="text-xs text-gray-500">Teacher Portal</p>
+                </div>
+              </Link>
+            </SheetTitle>
+          </SheetHeader>
+
+          {/* All Classes Link */}
+          <div className="px-2 py-2">
+            <Link
+              href="/classes"
+              onClick={handleLinkClick}
+              className={cn(
+                "group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors",
+                pathname === '/classes'
+                  ? "bg-blue-100 text-blue-700"
+                  : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+              )}
+            >
+              <ArrowLeft className={cn(
+                "mr-3 h-4 w-4",
+                pathname === '/classes'
+                  ? "text-blue-500"
+                  : "text-gray-400 group-hover:text-gray-500"
+              )} />
+              <span className="truncate">All Classes</span>
+            </Link>
+          </div>
+
+          {/* Class Context Info */}
+          {isInClassContext && classData && (
+            <div className="px-4 py-3 border-b border-gray-200 bg-blue-50">
+              <p className="text-xs font-medium text-blue-600 uppercase tracking-wide">
+                Current Class
+              </p>
+              <p className="text-sm font-medium text-gray-900">{classData.name}</p>
+              <p className="text-xs text-gray-500">
+                Grade {classData.grade} • {classData.subject === 'math' ? 'Math' : 'English'} • {classData.class_code}
+              </p>
+            </div>
+          )}
+
+          {/* Navigation */}
+          <nav className="flex-1 px-2 py-4 space-y-1">
+            {navigation.map((item) => {
+              const href = getNavHref(item.href)
+              const isActive = isNavItemActive(item.href)
+              const isClassSpecific = item.href.includes('[id]')
+              const isDisabled = isClassSpecific && !currentClassId
+
+              // Hide class-specific items when on classes page
+              if (isOnClassesPage && isClassSpecific) {
+                return null
+              }
+
+              if (isDisabled) {
+                return (
+                  <div
+                    key={item.name}
+                    className="group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors text-gray-400 cursor-not-allowed"
+                  >
+                    <item.icon className="mr-3 h-5 w-5 text-gray-300" />
+                    <span className="truncate">{item.name}</span>
+                  </div>
+                )
+              }
+
+              return (
+                <Link
+                  key={item.name}
+                  href={href as any}
+                  onClick={handleLinkClick}
+                  className={cn(
+                    "group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors",
+                    isActive
+                      ? "bg-blue-100 text-blue-700"
+                      : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                  )}
+                >
+                  <item.icon
+                    className={cn(
+                      "mr-3 h-5 w-5",
+                      isActive
+                        ? "text-blue-500"
+                        : "text-gray-400 group-hover:text-gray-500"
+                    )}
+                  />
+                  <span className="truncate">{item.name}</span>
+                </Link>
+              )
+            })}
+          </nav>
+
+          {/* Bottom section */}
+          <div className="border-t border-gray-200 p-2 space-y-1">
+            <button
+              className="group flex items-center px-2 py-2 text-sm font-medium text-gray-600 rounded-md hover:bg-gray-50 hover:text-gray-900 w-full text-left"
+              onClick={() => setOpen(false)}
+            >
+              <HelpCircle className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500" />
+              <span>Help</span>
+            </button>
+
+            <button
+              className="group flex items-center px-2 py-2 text-sm font-medium text-gray-600 rounded-md hover:bg-gray-50 hover:text-gray-900 w-full text-left"
+              onClick={() => setOpen(false)}
+            >
+              <Settings className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500" />
+              <span>Settings</span>
+            </button>
+
+            {teacher && (
+              <div className="px-2 py-2 border-t border-gray-200 mt-2">
+                <p className="text-xs font-medium text-gray-500 truncate">
+                  {teacher.full_name || teacher.email}
+                </p>
+                {teacher.school && (
+                  <p className="text-xs text-gray-400 truncate">{teacher.school}</p>
+                )}
+              </div>
+            )}
+
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleSignOut}
+              disabled={signOutMutation.isPending}
+              className="w-full justify-start text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+            >
+              <LogOut className="h-4 w-4 mr-3" />
+              {signOutMutation.isPending ? 'Signing out...' : 'Sign Out'}
+            </Button>
+          </div>
+        </div>
+      </SheetContent>
+    </Sheet>
+  )
+}

@@ -18,6 +18,7 @@ export interface Class {
   subject: 'math' | 'english'
   class_code: string
   school_year?: string
+  provider?: 'clever' | 'google_classroom' | null
   archived: boolean
   created_at: string
   settings?: Record<string, any>

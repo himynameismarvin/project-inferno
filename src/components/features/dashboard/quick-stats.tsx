@@ -3,11 +3,10 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { useClassById } from '@/lib/hooks/useClasses'
 import {
-  Users,
-  UserCheck,
-  ClipboardList,
-  TrendingUp,
-  Circle
+  Flame,
+  HelpCircle,
+  Activity,
+  AlertTriangle,
 } from 'lucide-react'
 
 interface QuickStatsProps {
@@ -37,32 +36,32 @@ export function QuickStats({ classId }: QuickStatsProps) {
 
   const stats = [
     {
-      title: 'Total Students',
-      value: classData.student_count,
-      icon: Users,
-      description: 'Enrolled in this class',
+      title: 'Class Streak',
+      value: '5 days',
+      icon: Flame,
+      description: 'Consecutive activity',
+      color: 'text-orange-600'
+    },
+    {
+      title: 'Questions Answered',
+      value: '1,247',
+      icon: HelpCircle,
+      description: 'This week total',
       color: 'text-blue-600'
     },
     {
-      title: 'Online Now',
-      value: classData.active_students,
-      icon: UserCheck,
-      description: 'Currently active',
+      title: 'Engagement Rate',
+      value: '78%',
+      icon: Activity,
+      description: 'Active this week',
       color: 'text-green-600'
     },
     {
-      title: 'Active Assignments',
-      value: 3,
-      icon: ClipboardList,
-      description: 'Due this week',
-      color: 'text-purple-600'
-    },
-    {
-      title: 'Avg Progress',
-      value: '76%',
-      icon: TrendingUp,
-      description: 'Class performance',
-      color: 'text-orange-600'
+      title: 'Need Help',
+      value: '4 students',
+      icon: AlertTriangle,
+      description: 'Struggling this week',
+      color: 'text-red-600'
     }
   ]
 
@@ -85,12 +84,6 @@ export function QuickStats({ classId }: QuickStatsProps) {
               <p className="text-xs text-gray-500">
                 {stat.description}
               </p>
-              {stat.title === 'Online Now' && (
-                <div className="flex items-center mt-2">
-                  <Circle className="h-2 w-2 fill-green-500 text-green-500 mr-1" />
-                  <span className="text-xs text-green-600">Live</span>
-                </div>
-              )}
             </CardContent>
           </Card>
         )
