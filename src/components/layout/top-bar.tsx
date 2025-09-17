@@ -22,7 +22,7 @@ export function TopBar({
   currentSubject = 'math',
   onSubjectChange,
 }: TopBarProps) {
-  const { sidebarOpen, setSidebarOpen } = useAppStore()
+  // Note: sidebarOpen state should be managed by parent component
   const pathname = usePathname()
 
   // Determine page title based on pathname if not provided
@@ -45,10 +45,10 @@ export function TopBar({
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => setSidebarOpen(!sidebarOpen)}
+            onClick={() => {/* Sidebar toggle functionality */}}
             className="text-gray-500 hover:text-gray-700"
           >
-            {sidebarOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            <Menu className="h-5 w-5" />
           </Button>
 
           <div className="flex items-center space-x-3">

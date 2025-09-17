@@ -153,7 +153,7 @@ export function useClassById(classId?: string) {
         if (!foundClass) {
           throw new Error('Class not found')
         }
-        return foundClass
+        return foundClass as ClassWithStats
       }
 
       const { data, error } = await supabase
